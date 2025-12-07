@@ -1,15 +1,16 @@
 class ApiClient {
   constructor(base) {
-    this.base = base || process.env.GATEWAY_URL || 'http://localhost:8080';
+    this.base =
+      base || process.env.GATEWAY_URL || "http://localhost:8080";
   }
 
   async health() {
-    const res = await fetch(this.base + '/');
+    const res = await fetch(this.base + "/");
     return await res.json();
   }
 
   async listUsers() {
-    const res = await fetch(this.base + '/users');
+    const res = await fetch(this.base + "/users");
     return await res.json();
   }
 

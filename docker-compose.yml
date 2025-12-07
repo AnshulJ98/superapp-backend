@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 services:
   user-service:
     build:
@@ -20,6 +20,9 @@ services:
     image: superapp-chat-service:latest
     ports:
       - "3002:3002"
+    depends_on:
+      redis:
+        condition: service_healthy
 
   analytics-service:
     build:
@@ -38,6 +41,17 @@ services:
       - user-service
       - chat-service
       - analytics-service
+
+  redis:
+    image: redis:7-alpine
+    container_name: superapp-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   postgres:
     image: postgres:15-alpine

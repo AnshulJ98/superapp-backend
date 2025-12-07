@@ -1,9 +1,9 @@
 // Data access layer for users. Uses Prisma when USE_DB=1, otherwise in-memory.
-let useDb = process.env.USE_DB === '1' || false;
+let useDb = process.env.USE_DB === "1" || false;
 let prisma;
 try {
   if (useDb) {
-    const { PrismaClient } = require('@prisma/client');
+    const { PrismaClient } = require("@prisma/client");
     prisma = new PrismaClient();
   }
 } catch (err) {
@@ -31,15 +31,23 @@ async function createUser({ name, email }) {
   if (useDb) {
     return prisma.user.create({ data: { name, email } });
   }
-  const id = require('uuid').v4();
-  const user = { id, name, email, createdAt: new Date().toISOString() };
+  const id = require("uuid").v4();
+  const user = {
+    id,
+    name,
+    email,
+    createdAt: new Date().toISOString(),
+  };
   inMemory.set(id, user);
   return user;
 }
 
 async function updateUser(id, { name, email }) {
   if (useDb) {
-    return prisma.user.update({ where: { id }, data: { name, email } });
+    return prisma.user.update({
+      where: { id },
+      data: { name, email },
+    });
   }
   const user = inMemory.get(id);
   if (!user) return null;
