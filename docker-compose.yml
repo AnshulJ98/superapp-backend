@@ -28,6 +28,17 @@ services:
     ports:
       - "3003:3003"
 
+  gateway:
+    build:
+      context: ./services/gateway
+    image: superapp-gateway:latest
+    ports:
+      - "8080:8080"
+    depends_on:
+      - user-service
+      - chat-service
+      - analytics-service
+
   postgres:
     image: postgres:15-alpine
     container_name: superapp-postgres
