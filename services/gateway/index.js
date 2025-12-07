@@ -45,12 +45,19 @@ async function proxyRequest(req, res) {
 
   try {
     console.log(`[PROXY] ${req.method} ${targetUrl}`);
-    console.log(`[PROXY] Content-Type: ${headers["content-type"]}, Body size: ${body ? body.length : 0}`);
-    
+    console.log(
+      `[PROXY] Content-Type: ${headers["content-type"]}, Body size: ${
+        body ? body.length : 0
+      }`
+    );
+
     const response = await fetch(targetUrl, {
       method: req.method,
       headers,
-      body: body && (req.method === "POST" || req.method === "PUT") ? body : undefined,
+      body:
+        body && (req.method === "POST" || req.method === "PUT")
+          ? body
+          : undefined,
     });
     console.log(`[PROXY] Response status: ${response.status}`);
     res.statusCode = response.status;
@@ -59,7 +66,10 @@ async function proxyRequest(req, res) {
     if (responseBody && typeof responseBody.pipe === "function") {
       // Node stream
       responseBody.pipe(res);
-    } else if (responseBody && typeof responseBody.pipeTo === "function") {
+    } else if (
+      responseBody &&
+      typeof responseBody.pipeTo === "function"
+    ) {
       // WHATWG ReadableStream (pipeTo to a writable stream)
       try {
         const writable = new (require("stream").Writable)({
