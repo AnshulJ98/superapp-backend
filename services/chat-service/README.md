@@ -44,6 +44,7 @@ go test -v
 ```
 
 Tests verify:
+
 - WebSocket connection and message receiving
 - Multi-client broadcasting
 - Redis pub/sub integration
@@ -57,4 +58,3 @@ docker compose up -d chat-service redis
 ```
 
 Connects to Redis at `redis:6379` (internal network).
-
