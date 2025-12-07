@@ -154,7 +154,7 @@ Write Jest integration tests in `services/user-service/tests/user.test.js` cover
 
 **Edge Cases:**
 
-- Whitespace-only name ("   ")
+- Whitespace-only name (" ")
 - Email with special characters (user+tag@example.com)
 - Name with Unicode characters (José, 北京)
 - Very long but valid email (255 characters exactly)
@@ -203,13 +203,18 @@ function isValidName(name) {
 }
 
 // Standardized error response builder
-function createErrorResponse(statusCode, errorMessage, details = [], errorId = null) {
+function createErrorResponse(
+  statusCode,
+  errorMessage,
+  details = [],
+  errorId = null
+) {
   return {
     error: errorMessage,
     statusCode,
     details,
     timestamp: new Date().toISOString(),
-    ...(errorId && { errorId })
+    ...(errorId && { errorId }),
   };
 }
 
@@ -290,7 +295,7 @@ Implement message storage using Redis sorted sets ordered by timestamp:
 Redis Sorted Set: messages:<roomId>
 ├── Member: <messageJSON>
 ├── Score: <unixTimestampMs>
-└── Example: 
+└── Example:
     messages:general
     ├── {"from":"alice","text":"Hello"} (score: 1733599000000)
     ├── {"from":"bob","text":"Hi there"} (score: 1733599001234)
@@ -420,7 +425,7 @@ client.ZAdd(ctx, fmt.Sprintf("messages:%s", roomId), &redis.Z{
 }).Result()
 
 // Retrieve paginated messages (oldest first)
-messages, err := client.ZRange(ctx, fmt.Sprintf("messages:%s", roomId), 
+messages, err := client.ZRange(ctx, fmt.Sprintf("messages:%s", roomId),
   int64(offset), int64(offset + limit - 1)).Result()
 
 // Get total message count in a room
@@ -445,7 +450,6 @@ if roomId == "" {
 - Implement `DELETE /messages/:roomId/:messageId` to remove specific messages
 
 ---
-
 
 - No way to retrieve historical messages
 - No room-based chat organization

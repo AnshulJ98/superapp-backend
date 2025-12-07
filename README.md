@@ -2,7 +2,7 @@
 
 ## Introduction
 
-This project represents a comprehensive implementation of a distributed, multi-client backend system employing contemporary software engineering principles and cloud-native architectural patterns. The system orchestrates four specialized microservices—user management, real-time communication, analytics, and API aggregation—coordinated through a unified gateway and persistent data layers. 
+This project represents a comprehensive implementation of a distributed, multi-client backend system employing contemporary software engineering principles and cloud-native architectural patterns. The system orchestrates four specialized microservices—user management, real-time communication, analytics, and API aggregation—coordinated through a unified gateway and persistent data layers.
 
 The architecture demonstrates best practices in service decomposition, asynchronous communication, containerization, and polyglot persistence, making it suitable both as an educational reference and as a foundation for production-grade applications.
 
@@ -268,14 +268,14 @@ docker compose build [service-name] && docker compose up -d [service-name]
 
 **Service Port Mappings:**
 
-| Service | Internal Port | External Port | Access URL |
-|---------|---------------|---------------|------------|
-| Gateway | 8080 | 8080 | http://localhost:8080 |
-| User Service | 3001 | 3011 | http://localhost:3011 |
-| Chat Service | 3002 | 3002 | http://localhost:3002 |
-| Analytics Service | 3003 | 3003 | http://localhost:3003 |
-| PostgreSQL | 5432 | 5432 | localhost:5432 |
-| Redis | 6379 | 6379 | localhost:6379 |
+| Service           | Internal Port | External Port | Access URL            |
+| ----------------- | ------------- | ------------- | --------------------- |
+| Gateway           | 8080          | 8080          | http://localhost:8080 |
+| User Service      | 3001          | 3011          | http://localhost:3011 |
+| Chat Service      | 3002          | 3002          | http://localhost:3002 |
+| Analytics Service | 3003          | 3003          | http://localhost:3003 |
+| PostgreSQL        | 5432          | 5432          | localhost:5432        |
+| Redis             | 6379          | 6379          | localhost:6379        |
 
 ## Repository Organization
 
@@ -402,18 +402,21 @@ The system provides a solid foundation for numerous enhancements:
 ## References and Technologies
 
 **Languages and Frameworks:**
+
 - Node.js and Express (gateway, user service, clients)
 - Go and Gin (chat service)
 - Python and FastAPI (analytics service)
 - React Native and Expo (mobile client)
 
 **Data and Infrastructure:**
+
 - PostgreSQL (relational data persistence)
 - Redis (pub/sub and caching)
 - Prisma ORM (schema migration and typed data access)
 - Docker and Docker Compose (containerization and orchestration)
 
 **Testing and Quality:**
+
 - Jest and Supertest (Node.js integration testing)
 - Go standard library testing (concurrent and WebSocket testing)
 - GitHub Actions (continuous integration)
