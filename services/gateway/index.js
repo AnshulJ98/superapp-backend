@@ -32,23 +32,34 @@ async function proxyRequest(req, res) {
   const headers = Object.assign({}, req.headers);
   delete headers.host;
 
+  // Buffer the request body for non-GET/HEAD requests
+  let body = undefined;
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    body = await new Promise((resolve, reject) => {
+      const chunks = [];
+      req.on("data", (chunk) => chunks.push(chunk));
+      req.on("end", () => resolve(Buffer.concat(chunks)));
+      req.on("error", reject);
+    });
+  }
+
   try {
+    console.log(`[PROXY] ${req.method} ${targetUrl}`);
+    console.log(`[PROXY] Content-Type: ${headers["content-type"]}, Body size: ${body ? body.length : 0}`);
+    
     const response = await fetch(targetUrl, {
       method: req.method,
       headers,
-      body:
-        req.method === "GET" || req.method === "HEAD"
-          ? undefined
-          : req,
+      body: body && (req.method === "POST" || req.method === "PUT") ? body : undefined,
     });
     console.log(`[PROXY] Response status: ${response.status}`);
     res.statusCode = response.status;
     response.headers.forEach((v, k) => res.setHeader(k, v));
-    const body = response.body;
-    if (body && typeof body.pipe === "function") {
+    const responseBody = response.body;
+    if (responseBody && typeof responseBody.pipe === "function") {
       // Node stream
-      body.pipe(res);
-    } else if (body && typeof body.pipeTo === "function") {
+      responseBody.pipe(res);
+    } else if (responseBody && typeof responseBody.pipeTo === "function") {
       // WHATWG ReadableStream (pipeTo to a writable stream)
       try {
         const writable = new (require("stream").Writable)({
@@ -57,7 +68,7 @@ async function proxyRequest(req, res) {
             cb();
           },
         });
-        await body.pipeTo(writable);
+        await responseBody.pipeTo(writable);
         res.end();
       } catch (err) {
         // fallback to arrayBuffer
@@ -70,8 +81,9 @@ async function proxyRequest(req, res) {
       res.end(Buffer.from(ab));
     }
   } catch (err) {
+    console.error(`[PROXY ERROR] ${req.method} ${targetUrl}:`, err);
     res.statusCode = 502;
-    res.end(String(err));
+    res.end(JSON.stringify({ error: String(err) }));
   }
 }
 
