@@ -5,26 +5,34 @@
 Pick **ONE** assignment based on your interests and skill level.
 
 ### 🌟 For Beginners → Start with Assignment 3
+
 **API Gateway Logging** — Low risk, immediate feedback, improves observability
+
 - Duration: 1.5-2 hours
 - Skills: Node.js, file I/O, basic middleware
 - Impact: All requests now trackable and debuggable
 
 ### 🚀 For Backend Developers → Start with Assignment 1
+
 **User Service CRUD with Validation** — Foundation for all other work
+
 - Duration: 2-3 hours
 - Skills: Node.js/Express, validation, testing
 - Impact: Production-ready user API with proper error handling
 - **Recommended:** Do this first, unlock Assignment 4
 
 ### 🔧 For Advanced Developers → Start with Assignment 2
+
 **Chat Message Persistence** — Complex distributed systems
+
 - Duration: 3-4 hours
 - Skills: Go, Redis, WebSocket
 - Impact: Users can see chat history, messages persist
 
 ### 🔐 For Security-Focused → Start with Assignment 4
+
 **Authentication & JWT** — Secure the API
+
 - Duration: 3-4 hours
 - Skills: Cryptography, JWT, RBAC
 - Impact: Protected endpoints, user roles, token management
@@ -34,15 +42,15 @@ Pick **ONE** assignment based on your interests and skill level.
 
 ## 📋 Assignment Summary
 
-| # | Title | Difficulty | Time | Priority | Skills |
-|---|-------|-----------|------|----------|--------|
-| 1 | User CRUD Validation | Medium | 2-3h | HIGH | Node/Express, testing |
-| 2 | Chat Persistence | Advanced | 3-4h | HIGH | Go, Redis, WebSocket |
-| 3 | Gateway Logging | Medium | 1.5-2h | MEDIUM | Node.js, observability |
-| 4 | Authentication JWT | Advanced | 3-4h | MEDIUM | Crypto, JWT, RBAC |
-| 5 | API Documentation | Medium | 2-3h | LOW | OpenAPI, Swagger |
-| 6 | Metrics & Health | Advanced | 3-4h | MEDIUM | Observability |
-| 7 | Database Seeding | Medium | 1.5-2h | MEDIUM | Databases, scripting |
+| #   | Title                | Difficulty | Time   | Priority | Skills                 |
+| --- | -------------------- | ---------- | ------ | -------- | ---------------------- |
+| 1   | User CRUD Validation | Medium     | 2-3h   | HIGH     | Node/Express, testing  |
+| 2   | Chat Persistence     | Advanced   | 3-4h   | HIGH     | Go, Redis, WebSocket   |
+| 3   | Gateway Logging      | Medium     | 1.5-2h | MEDIUM   | Node.js, observability |
+| 4   | Authentication JWT   | Advanced   | 3-4h   | MEDIUM   | Crypto, JWT, RBAC      |
+| 5   | API Documentation    | Medium     | 2-3h   | LOW      | OpenAPI, Swagger       |
+| 6   | Metrics & Health     | Advanced   | 3-4h   | MEDIUM   | Observability          |
+| 7   | Database Seeding     | Medium     | 1.5-2h | MEDIUM   | Databases, scripting   |
 
 ---
 
@@ -73,6 +81,7 @@ Assignment 7: Database Seeding (1.5-2h)
 ## ✅ Before You Start
 
 ### Setup Checklist
+
 - [ ] Repository cloned: `superapp-backend/`
 - [ ] Docker installed and running
 - [ ] Node.js 18+ installed
@@ -81,6 +90,7 @@ Assignment 7: Database Seeding (1.5-2h)
 - [ ] Tests passing: `make test-chat`
 
 ### Knowledge Check
+
 - [ ] Understand how microservices communicate
 - [ ] Know basic HTTP status codes
 - [ ] Familiar with git workflow (branches, PRs)
@@ -88,6 +98,7 @@ Assignment 7: Database Seeding (1.5-2h)
 - [ ] Know how to read test files
 
 ### Files You'll Need
+
 - `ASSIGNMENTS.md` — Full assignment details
 - `README.md` — Project architecture
 - `Makefile` — Useful commands
@@ -140,7 +151,12 @@ function isValidEmail(email) {
 }
 
 function isValidName(name) {
-  return name && typeof name === 'string' && name.trim().length > 0 && name.length <= 100;
+  return (
+    name &&
+    typeof name === "string" &&
+    name.trim().length > 0 &&
+    name.length <= 100
+  );
 }
 
 // Add error response helper
@@ -149,23 +165,27 @@ function errorResponse(statusCode, message, details = []) {
     error: message,
     statusCode,
     details,
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
 }
 
 // Update POST /users
-app.post('/users', (req, res) => {
+app.post("/users", (req, res) => {
   const { name, email } = req.body;
-  
+
   // Validate
   const errors = [];
-  if (!isValidName(name)) errors.push({ field: 'name', message: 'Invalid name' });
-  if (!isValidEmail(email)) errors.push({ field: 'email', message: 'Invalid email' });
-  
+  if (!isValidName(name))
+    errors.push({ field: "name", message: "Invalid name" });
+  if (!isValidEmail(email))
+    errors.push({ field: "email", message: "Invalid email" });
+
   if (errors.length > 0) {
-    return res.status(400).json(errorResponse(400, 'Validation failed', errors));
+    return res
+      .status(400)
+      .json(errorResponse(400, "Validation failed", errors));
   }
-  
+
   // Check duplicate
   // Create user
   // Return 201
@@ -195,6 +215,7 @@ npm test -- --coverage
 ### Common Issues
 
 **"User service not starting"**
+
 ```bash
 docker logs superapp-backend-user-service-1
 # Check for Prisma errors, fix schema, rebuild:
@@ -202,6 +223,7 @@ docker compose up -d --build user-service
 ```
 
 **"Tests failing after changes"**
+
 ```bash
 cd services/user-service
 npm test -- --verbose
@@ -209,6 +231,7 @@ npm test -- --verbose
 ```
 
 **"Can't reach gateway"**
+
 ```bash
 # Verify all services are running
 docker compose ps
@@ -225,6 +248,7 @@ docker compose restart
 ## 🏆 Success Criteria
 
 When you finish an assignment:
+
 - [ ] All acceptance criteria met
 - [ ] Tests passing (>80% coverage)
 - [ ] Code follows style guide
@@ -261,4 +285,4 @@ While you work, try to find these hidden surprises:
 
 **Ready? Open `ASSIGNMENTS.md` and pick your first assignment!** 🚀
 
-*Last updated: 2025-12-07*
+_Last updated: 2025-12-07_
