@@ -1,0 +1,24 @@
+version: '3.8'
+services:
+  user-service:
+    build:
+      context: ./services/user-service
+    image: superapp-user-service:latest
+    ports:
+      - "3011:3001"
+    environment:
+      - NODE_ENV=development
+
+  chat-service:
+    build:
+      context: ./services/chat-service
+    image: superapp-chat-service:latest
+    ports:
+      - "3002:3002"
+
+  analytics-service:
+    build:
+      context: ./services/analytics-service
+    image: superapp-analytics-service:latest
+    ports:
+      - "3003:3003"
