@@ -8,6 +8,11 @@ services:
       - "3011:3001"
     environment:
       - NODE_ENV=development
+      - DATABASE_URL=postgresql://superapp:superapp_dev@postgres:5432/superapp_db
+      - USE_DB=1
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   chat-service:
     build:
@@ -22,3 +27,23 @@ services:
     image: superapp-analytics-service:latest
     ports:
       - "3003:3003"
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: superapp-postgres
+    environment:
+      POSTGRES_INITDB_ARGS: "-U postgres"
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker-postgres-init.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:

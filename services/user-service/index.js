@@ -7,58 +7,49 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// In-memory users store (replace with DB in later steps)
-const users = new Map();
+const store = require('./lib/store');
 
 // Health
-app.get("/", (req, res) => res.send("User Service Running"));
+app.get('/', (req, res) => res.send('User Service Running'));
 
 // List users
-app.get("/users", (req, res) => {
-  const list = Array.from(users.values());
+app.get('/users', async (req, res) => {
+  const list = await store.listUsers();
   res.json(list);
 });
 
 // Get user by id
-app.get("/users/:id", (req, res) => {
-  const user = users.get(req.params.id);
-  if (!user) return res.status(404).json({ error: "User not found" });
+app.get('/users/:id', async (req, res) => {
+  const user = await store.getUser(req.params.id);
+  if (!user) return res.status(404).json({ error: 'User not found' });
   res.json(user);
 });
 
 // Create user
-app.post("/users", (req, res) => {
+app.post('/users', async (req, res) => {
   const { name, email } = req.body;
-  if (!name || !email)
-    return res.status(400).json({ error: "name and email required" });
-  const id = uuidv4();
-  const user = {
-    id,
-    name,
-    email,
-    createdAt: new Date().toISOString(),
-  };
-  users.set(id, user);
-  res.status(201).json(user);
+  if (!name || !email) return res.status(400).json({ error: 'name and email required' });
+  try {
+    const user = await store.createUser({ name, email });
+    res.status(201).json(user);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'internal error' });
+  }
 });
 
 // Update user
-app.put("/users/:id", (req, res) => {
-  const user = users.get(req.params.id);
-  if (!user) return res.status(404).json({ error: "User not found" });
+app.put('/users/:id', async (req, res) => {
   const { name, email } = req.body;
-  if (name) user.name = name;
-  if (email) user.email = email;
-  user.updatedAt = new Date().toISOString();
-  users.set(user.id, user);
-  res.json(user);
+  const updated = await store.updateUser(req.params.id, { name, email });
+  if (!updated) return res.status(404).json({ error: 'User not found' });
+  res.json(updated);
 });
 
 // Delete user
-app.delete("/users/:id", (req, res) => {
-  const existed = users.delete(req.params.id);
-  if (!existed)
-    return res.status(404).json({ error: "User not found" });
+app.delete('/users/:id', async (req, res) => {
+  const existed = await store.deleteUser(req.params.id);
+  if (!existed) return res.status(404).json({ error: 'User not found' });
   res.status(204).send();
 });
 
